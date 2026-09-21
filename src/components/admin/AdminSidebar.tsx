@@ -15,7 +15,7 @@ const navItems = [
   { href: '/admin/spaces', icon: Building2, label: 'Kelola Space' },
   { href: '/admin/members', icon: Users, label: 'Data Member' },
   { href: '/admin/diskon', icon: Tag, label: 'Promo & Diskon' },
-  { href: '/admin/reports', icon: FileBarChart2, label: 'Laporan' },
+  { href: '/admin/laporan', icon: FileBarChart2, label: 'Laporan' },
   { href: '/admin/profile', icon: Settings, label: 'Profil Space' },
 ];
 

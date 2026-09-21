@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { formatCurrency, formatDate, getStatusInfo } from '@/lib/utils';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { ArrowLeft, Calendar, Clock, MapPin, CheckCircle, XCircle, CreditCard, FileText } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, MapPin, CreditCard, FileText, QrCode } from 'lucide-react';
 
 export default async function DetailReservasiPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -41,9 +41,9 @@ export default async function DetailReservasiPage({ params }: { params: { id: st
         <ArrowLeft size={16} /> Kembali ke Dashboard
       </Link>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-8)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-8)', flexWrap: 'wrap', gap: 'var(--spacing-4)' }}>
         <div>
-          <h1 style={{ fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-2)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+          <h1 style={{ fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-2)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', flexWrap: 'wrap' }}>
             Detail Reservasi
             <span style={{ 
               padding: '4px var(--spacing-4)', borderRadius: 'var(--radius-full)', 
@@ -57,6 +57,17 @@ export default async function DetailReservasiPage({ params }: { params: { id: st
             Booking ID: <span style={{ color: 'var(--color-accent-primary)', fontWeight: 'var(--font-weight-bold)' }}>{reservasi.kodeBooking}</span>
           </p>
         </div>
+        <Link
+          href={`/dashboard/reservasi/${reservasi.id}/e-ticket`}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)',
+            padding: '0.6rem 1.25rem', borderRadius: 'var(--radius-lg)',
+            background: 'var(--gradient-accent)', color: 'white',
+            textDecoration: 'none', fontWeight: 600, fontSize: 'var(--font-size-sm)',
+          }}
+        >
+          <QrCode size={16} /> Lihat E-Ticket
+        </Link>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-6)' }}>

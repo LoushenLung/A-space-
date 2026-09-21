@@ -9,29 +9,20 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-// ============================================================
-// ENTITAS USERS (Authentication)
-// role values: "admin_space", "member"
-// ============================================================
-
 model User {
   id         String      @id @default(cuid())
   username   String      @unique
   password   String
   role       String      @default("member")
+  makerId    String      @default("default-maker") @map("maker_id")
   createdAt  DateTime    @default(now()) @map("created_at")
   updatedAt  DateTime    @updatedAt @map("updated_at")
 
-  // Relations
   member     Member?
   spaceOwner SpaceOwner?
 
   @@map("users")
 }
-
-// ============================================================
-// ENTITAS MEMBER (Pelanggan/Pengunjung)
-// ============================================================
 
 model Member {
   id          String        @id @default(cuid())
@@ -39,21 +30,17 @@ model Member {
   instansi    String?
   alamat      String?
   telp        String?
-  foto        String?       // filename, served from /uploads/members/
+  foto        String?
   userId      String        @unique @map("id_user")
+  makerId     String        @default("default-maker") @map("maker_id")
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
 
-  // Relations
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   reservasi   Reservasi[]
 
   @@map("member")
 }
-
-// ============================================================
-// ENTITAS SPACE OWNER (Admin Pengelola)
-// ============================================================
 
 model SpaceOwner {
   id             String   @id @default(cuid())
@@ -63,46 +50,37 @@ model SpaceOwner {
   alamat         String?
   deskripsi      String?
   userId         String   @unique @map("id_user")
+  makerId        String   @default("default-maker") @map("maker_id")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  // Relations
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   spaces         Space[]
 
   @@map("space_owner")
 }
 
-// ============================================================
-// ENTITAS SPACE (Ruangan / Meja)
-// tipe values: "desk", "meeting_room", "private_office"
-// ============================================================
-
 model Space {
   id          String     @id @default(cuid())
   namaSpace   String     @map("nama_space")
   hargaPerJam Float      @map("harga_per_jam")
-  tipe        String     // desk, meeting_room, private_office
+  tipe        String
   kapasitas   Int
   deskripsi   String?
-  fasilitas   String?    // JSON string array of facilities
-  foto        String?    // filename, served from /uploads/spaces/
+  fasilitas   String?
+  foto        String?
   isActive    Boolean    @default(true) @map("is_active")
   ownerId     String     @map("id_owner")
+  makerId     String     @default("default-maker") @map("maker_id")
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
 
-  // Relations
   owner             SpaceOwner        @relation(fields: [ownerId], references: [id])
   reservasi         Reservasi[]
   detailReservasi   DetailReservasi[]
 
   @@map("space")
 }
-
-// ============================================================
-// ENTITAS DISKON (Promo / Kode Diskon)
-// ============================================================
 
 model Diskon {
   id                String            @id @default(cuid())
@@ -111,27 +89,23 @@ model Diskon {
   persentaseDiskon  Float             @map("persentase_diskon")
   tanggalAwal       DateTime          @map("tanggal_awal")
   tanggalAkhir      DateTime          @map("tanggal_akhir")
+  makerId           String            @default("default-maker") @map("maker_id")
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  // Relations
   reservasi         Reservasi[]
   detailReservasi   DetailReservasi[]
 
   @@map("diskon")
 }
 
-// ============================================================
-// ENTITAS RESERVASI (Pemesanan)
-// status values: "belum_dikonfirm", "disetujui", "aktif", "selesai", "dibatalkan"
-// ============================================================
-
 model Reservasi {
   id               String            @id @default(cuid())
   kodeBooking      String            @unique @map("kode_booking")
+  qrToken          String            @unique @default(uuid()) @map("qr_token")
   tanggalReservasi DateTime          @map("tanggal_reservasi")
-  jamMulai         String            @map("jam_mulai")    // HH:mm format
-  jamSelesai       String            @map("jam_selesai")  // HH:mm format
+  jamMulai         String            @map("jam_mulai")
+  jamSelesai       String            @map("jam_selesai")
   durasiJam        Int               @map("durasi_jam")
   hargaPerJam      Float             @map("harga_per_jam")
   totalHargaAwal   Float             @map("total_harga_awal")
@@ -144,10 +118,10 @@ model Reservasi {
   memberId         String            @map("id_member")
   spaceId          String            @map("id_space")
   diskonId         String?           @map("id_diskon")
+  makerId          String            @default("default-maker") @map("maker_id")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
 
-  // Relations
   member          Member            @relation(fields: [memberId], references: [id])
   space           Space             @relation(fields: [spaceId], references: [id])
   diskon          Diskon?           @relation(fields: [diskonId], references: [id])
@@ -156,19 +130,15 @@ model Reservasi {
   @@map("reservasi")
 }
 
-// ============================================================
-// ENTITAS DETAIL RESERVASI (Pivot / Junction)
-// ============================================================
-
 model DetailReservasi {
   id           String   @id @default(cuid())
   reservasiId  String   @map("id_reservasi")
   spaceId      String   @map("id_space")
   diskonId     String?  @map("id_diskon")
   totalHarga   Float    @map("total_harga")
+  makerId      String   @default("default-maker") @map("maker_id")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  // Relations
   reservasi    Reservasi @relation(fields: [reservasiId], references: [id], onDelete: Cascade)
   space        Space     @relation(fields: [spaceId], references: [id])
   diskon       Diskon?   @relation(fields: [diskonId], references: [id])
