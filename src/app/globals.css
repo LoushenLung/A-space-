@@ -182,3 +182,19 @@ a:hover {
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
+
+/* Responsive Utilities */
+.md-hidden { display: none; }
+.md-flex { display: flex; }
+
+.auth-layout { grid-template-columns: 1fr; }
+
+@media (min-width: 768px) {
+  .md-hidden { display: flex; }
+  .md-flex { display: none !important; }
+  .auth-layout { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .md-hidden { display: none; }
+}

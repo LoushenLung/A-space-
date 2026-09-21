@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 
 function LoginForm() {
   const router = useRouter();
@@ -44,29 +44,40 @@ function LoginForm() {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: 'var(--spacing-3) var(--spacing-4)',
+    background: 'var(--color-bg-tertiary)', border: '1px solid var(--glass-border)',
+    borderRadius: 'var(--radius-md)', color: 'var(--color-text-primary)',
+    fontSize: 'var(--font-size-base)', outline: 'none', transition: 'all var(--transition-fast)',
+  };
+
   return (
-    <div className="glass-panel animate-fade-in" style={{ width: '100%', maxWidth: '420px', padding: 'var(--spacing-8)', position: 'relative', zIndex: 1 }}>
-      {/* Logo */}
-      <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-8)' }}>
-        <Link href="/" style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)' }}>
-          Ur<span className="text-gradient">Space</span>
-        </Link>
-        <p style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--spacing-2)', marginBottom: 0 }}>
-          Masuk ke akun Anda
+    <div className="animate-fade-in" style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
+      {/* Back to Home */}
+      <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-8)', fontSize: 'var(--font-size-sm)' }}>
+        <ArrowLeft size={16} /> Kembali ke Beranda
+      </Link>
+
+      <div style={{ marginBottom: 'var(--spacing-8)' }}>
+        <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', marginBottom: 'var(--spacing-2)' }}>
+          Selamat Datang Kembali
+        </h1>
+        <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+          Masuk untuk mengelola reservasi dan workspace Anda.
         </p>
       </div>
 
       {error && (
-        <div style={{
+        <div className="animate-fade-in" style={{
           background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)',
           borderRadius: 'var(--radius-md)', padding: 'var(--spacing-3) var(--spacing-4)',
-          marginBottom: 'var(--spacing-4)', color: '#ef4444', fontSize: 'var(--font-size-sm)',
+          marginBottom: 'var(--spacing-6)', color: '#ef4444', fontSize: 'var(--font-size-sm)',
         }}>
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)', color: 'var(--color-text-primary)' }}>
             Username
@@ -77,14 +88,15 @@ function LoginForm() {
             onChange={(e) => setForm(f => ({ ...f, username: e.target.value }))}
             placeholder="Masukkan username Anda"
             required
-            style={{
-              width: '100%', padding: 'var(--spacing-3) var(--spacing-4)',
-              background: 'var(--color-bg-tertiary)', border: '1px solid var(--glass-border)',
-              borderRadius: 'var(--radius-md)', color: 'var(--color-text-primary)',
-              fontSize: 'var(--font-size-base)', outline: 'none', transition: 'border-color var(--transition-fast)',
+            style={inputStyle}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--color-accent-primary)';
+              e.target.style.boxShadow = '0 0 0 4px rgba(99, 102, 241, 0.1)';
             }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--color-accent-primary)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--glass-border)';
+              e.target.style.boxShadow = 'none';
+            }}
           />
         </div>
 
@@ -98,14 +110,15 @@ function LoginForm() {
             onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))}
             placeholder="Masukkan password Anda"
             required
-            style={{
-              width: '100%', padding: 'var(--spacing-3) var(--spacing-4)',
-              background: 'var(--color-bg-tertiary)', border: '1px solid var(--glass-border)',
-              borderRadius: 'var(--radius-md)', color: 'var(--color-text-primary)',
-              fontSize: 'var(--font-size-base)', outline: 'none', transition: 'border-color var(--transition-fast)',
+            style={inputStyle}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--color-accent-primary)';
+              e.target.style.boxShadow = '0 0 0 4px rgba(99, 102, 241, 0.1)';
             }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--color-accent-primary)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--glass-border)';
+              e.target.style.boxShadow = 'none';
+            }}
           />
         </div>
 
@@ -113,14 +126,14 @@ function LoginForm() {
           type="submit"
           className="btn btn-primary"
           disabled={loading}
-          style={{ width: '100%', marginTop: 'var(--spacing-2)', gap: 'var(--spacing-2)', opacity: loading ? 0.7 : 1 }}
+          style={{ width: '100%', marginTop: 'var(--spacing-2)', gap: 'var(--spacing-2)', padding: 'var(--spacing-4)', opacity: loading ? 0.7 : 1 }}
         >
           {loading && <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />}
-          {loading ? 'Memproses...' : 'Masuk'}
+          {loading ? 'Memproses...' : 'Masuk ke Akun'}
         </button>
       </form>
 
-      <div style={{ textAlign: 'center', marginTop: 'var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+      <div style={{ textAlign: 'center', marginTop: 'var(--spacing-8)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
         Belum punya akun?{' '}
         <Link href="/register" style={{ color: 'var(--color-accent-primary)', fontWeight: 'var(--font-weight-medium)' }}>
           Daftar sekarang
@@ -134,29 +147,49 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: 'grid',
+      gridTemplateColumns: '1fr', // Default for mobile
       background: 'var(--color-bg-primary)',
-      padding: 'var(--spacing-6)',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* Background glow */}
+    }} className="auth-layout">
+      {/* Form Section */}
       <div style={{
-        position: 'absolute', top: '20%', left: '15%',
-        width: '350px', height: '350px',
-        background: 'var(--color-accent-primary)', filter: 'blur(120px)', opacity: 0.15, borderRadius: '50%', zIndex: 0,
-      }} />
-      <div style={{
-        position: 'absolute', bottom: '15%', right: '10%',
-        width: '300px', height: '300px',
-        background: 'var(--color-accent-tertiary)', filter: 'blur(120px)', opacity: 0.1, borderRadius: '50%', zIndex: 0,
-      }} />
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 'var(--spacing-8)',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        <Suspense fallback={<div style={{ color: 'var(--color-text-secondary)' }}>Memuat...</div>}>
+          <LoginForm />
+        </Suspense>
+      </div>
 
-      <Suspense fallback={<div className="glass-panel" style={{ padding: 'var(--spacing-8)', color: 'var(--color-text-secondary)' }}>Memuat...</div>}>
-        <LoginForm />
-      </Suspense>
+      {/* Visual Section (Hidden on Mobile, handled via CSS) */}
+      <div className="auth-visual md-hidden" style={{
+        background: 'var(--color-bg-secondary)',
+        position: 'relative',
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 'var(--spacing-12)',
+        borderLeft: '1px solid var(--glass-border)'
+      }}>
+        {/* Decorative Background Elements */}
+        <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '500px', height: '500px', background: 'var(--color-accent-primary)', filter: 'blur(150px)', opacity: 0.15, borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '400px', height: '400px', background: 'var(--color-accent-tertiary)', filter: 'blur(150px)', opacity: 0.15, borderRadius: '50%' }} />
+        
+        {/* Glassmorphism Feature Card */}
+        <div className="glass-panel" style={{ position: 'relative', zIndex: 1, maxWidth: '400px', padding: 'var(--spacing-8)', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}>
+          <div style={{ fontSize: 'var(--font-size-4xl)', fontWeight: 'var(--font-weight-bold)', marginBottom: 'var(--spacing-4)' }}>
+            Ur<span className="text-gradient">Space</span>
+          </div>
+          <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+            "Temukan produktivitas maksimal di ruang kerja yang dirancang khusus untuk Anda. Fleksibel, modern, dan nyaman."
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

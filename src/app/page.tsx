@@ -4,10 +4,11 @@ import Footer from '@/components/Footer';
 import SpaceCard from '@/components/SpaceCard';
 import Link from 'next/link';
 import { Zap, ArrowRight } from 'lucide-react';
+import { auth } from '@/lib/auth';
 
 export default async function HomePage() {
   // Fetch live data from database
-  const [spaces, activeDiscounts] = await Promise.all([
+  const [spaces, activeDiscounts, session] = await Promise.all([
     prisma.space.findMany({
       where: { isActive: true },
       include: { owner: { select: { namaCoworking: true } } },
@@ -21,6 +22,7 @@ export default async function HomePage() {
       },
       take: 3,
     }),
+    auth(),
   ]);
 
   const spaceTypeColors: Record<string, { color: string; bg: string }> = {
@@ -31,7 +33,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar session={session} />
       <main>
         {/* === HERO SECTION === */}
         <section style={{

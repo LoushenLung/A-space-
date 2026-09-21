@@ -26,7 +26,7 @@ export default async function MemberDashboard() {
   ];
 
   return (
-    <div>
+    <div className="animate-fade-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: 'var(--spacing-8)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
@@ -41,15 +41,26 @@ export default async function MemberDashboard() {
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-8)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--spacing-6)', marginBottom: 'var(--spacing-8)' }}>
         {statCards.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="glass-panel" style={{ padding: 'var(--spacing-5)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-lg)', background: `${color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Icon size={22} style={{ color }} />
+          <div key={label} className="glass-panel" style={{ 
+            padding: 'var(--spacing-6)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-5)',
+            transition: 'transform var(--transition-normal), box-shadow var(--transition-normal)'
+          }}
+          onMouseOver={(e: any) => {
+            e.currentTarget.style.transform = 'translateY(-4px)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg), 0 0 15px rgba(99, 102, 241, 0.15)';
+          }}
+          onMouseOut={(e: any) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+          }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-xl)', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: `1px solid ${color}30` }}>
+              <Icon size={24} style={{ color }} />
             </div>
             <div>
-              <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>{value}</div>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>{label}</div>
+              <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{value}</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{label}</div>
             </div>
           </div>
         ))}
@@ -62,36 +73,44 @@ export default async function MemberDashboard() {
           <Link href="/dashboard/history" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-accent-primary)' }}>Lihat semua →</Link>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           {reservasiList.map((r) => {
             const status = getStatusInfo(r.status);
             return (
               <Link key={r.id} href={`/dashboard/reservasi/${r.id}`} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)',
+                display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 'var(--spacing-4)',
+                padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)',
                 background: 'var(--color-bg-tertiary)', border: '1px solid var(--glass-border)',
-                textDecoration: 'none', transition: 'border-color var(--transition-fast)',
+                textDecoration: 'none', transition: 'all var(--transition-normal)',
               }}
-              onMouseOver={(e: any) => e.currentTarget.style.borderColor = 'var(--color-accent-primary)'}
-              onMouseOut={(e: any) => e.currentTarget.style.borderColor = 'var(--glass-border)'}
+              onMouseOver={(e: any) => {
+                e.currentTarget.style.borderColor = 'var(--color-accent-primary)';
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.05)';
+              }}
+              onMouseOut={(e: any) => {
+                e.currentTarget.style.borderColor = 'var(--glass-border)';
+                e.currentTarget.style.background = 'var(--color-bg-tertiary)';
+              }}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-1)' }}>
-                  <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>
-                    {r.space.namaSpace}
-                  </span>
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)' }}>
-                    {formatDateShort(r.tanggalReservasi)} · {r.jamMulai} – {r.jamSelesai} ({r.durasiJam} jam)
-                  </span>
-                  <span style={{ fontFamily: 'monospace', fontSize: 'var(--font-size-xs)', color: 'var(--color-accent-secondary)' }}>
-                    {r.kodeBooking}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                    <span style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)' }}>
+                      {r.space.namaSpace}
+                    </span>
+                    <span style={{ padding: '4px var(--spacing-3)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', background: status.bg, color: status.color.replace('text-', '') }}>
+                      {status.label}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+                    <CalendarCheck size={14} /> {formatDateShort(r.tanggalReservasi)} · {r.jamMulai} – {r.jamSelesai} ({r.durasiJam} jam)
                   </span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--spacing-2)' }}>
-                  <span style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>
+                  <span style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-primary)' }}>
                     {formatCurrency(Number(r.totalBayar))}
                   </span>
-                  <span style={{ padding: '2px var(--spacing-3)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-semibold)', background: status.bg, color: status.color.replace('text-', '') }}>
-                    {status.label}
+                  <span style={{ fontFamily: 'monospace', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+                    ID: {r.kodeBooking}
                   </span>
                 </div>
               </Link>
